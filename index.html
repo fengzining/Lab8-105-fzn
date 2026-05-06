@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>美丽烟台理工校园</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+            background: #fdfde2;
+            padding-bottom: 70px;
+            overflow-x: auto;
+        }
+
+        /* 容器保持原布局 */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .main-title {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2d6a4f;
+        }
+        .main-title h1 {
+            font-size: 32px;
+        }
+
+        .theme-title {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 30px 0 15px 10px;
+            padding-left: 12px;
+            border-left: 5px solid #2d6a4f;
+            color: #1b4d2e;
+            display: inline-block;
+            transition: transform 0.3s ease;
+            transform-origin: center;
+        }
+
+        .theme-title:hover {
+            transform: rotate(45deg);
+        }
+
+        .grid {
+            overflow: hidden;
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .card {
+            float: left;
+            width: calc(33.333% - 12px);
+            margin: 0 6px 12px 6px;
+            background: #fefefe;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .card-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+        .card-title {
+            text-align: center;
+            padding: 10px;
+            font-weight: 500;
+            background: #f9faf7;
+            border-top: 1px solid #e0ecda;
+            transition: transform 0.3s ease;
+            display: block;
+            cursor: default;
+        }
+
+        
+        /* 效果1：每个主题中，第一行（第1、2、3个卡片）的图片悬浮放大1.5倍 */
+        .grid .card:nth-child(1) .card-img:hover,
+        .grid .card:nth-child(2) .card-img:hover,
+        .grid .card:nth-child(3) .card-img:hover {
+            transform: scale(1.5);
+        }
+        
+        .grid .card:nth-child(1) .card-title:hover,
+        .grid .card:nth-child(2) .card-title:hover,
+        .grid .card:nth-child(3) .card-title:hover {
+            transform: rotate(45deg);
+        }
+
+        /* 效果3：每个主题中，第二行（第4、5、6个卡片）的图片悬浮倾斜30度 */
+        .grid .card:nth-child(4) .card-img:hover,
+        .grid .card:nth-child(5) .card-img:hover,
+        .grid .card:nth-child(6) .card-img:hover {
+            transform: skewX(30deg);
+        }
+
+        /* 父相子绝 */
+        .theme2 {
+            position: relative;
+        }
+        .absolute-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #2d6a4f;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            z-index: 10;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #1b3b2c;
+            color: white;
+            text-align: center;
+            padding: 12px;
+            font-size: 14px;
+            z-index: 999;
+        }
+
+        .animation-section {
+            margin: 40px 0 50px 0;
+            border-radius: 32px;
+            padding: 30px 20px;
+            box-shadow: 0 20px 30px rgba(0,0,0,0.3), inset 0 1px 3px rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 炫美装饰光效 */
+        .animation-section::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -20%;
+            width: 140%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,245,180,0.2) 0%, rgba(255,200,100,0) 70%);
+            pointer-events: none;
+            animation: shimmer 8s infinite linear;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-30%) translateY(-20%) rotate(0deg); opacity: 0.5;}
+            100% { transform: translateX(30%) translateY(20%) rotate(10deg); opacity: 0.8;}
+        }
+
+
+        .scene-title span {
+            display: inline-block;
+            animation: titlePulse 1.8s ease-in-out infinite;
+        }
+        @keyframes titlePulse {
+            0%{ text-shadow: 0 0 2px gold; transform: scale(1);}
+            50%{ text-shadow: 0 0 15px #ffcc44, 0 0 5px orange; transform: scale(1.02);}
+            100%{ text-shadow: 0 0 2px gold; transform: scale(1);}
+        }
+
+        /* 3D 舞台容器*/
+        .stage-3d {
+            perspective: 1200px;
+            perspective-origin: 50% 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 480px;
+            margin: 20px 0;
+        }
+
+        /* 3D 立方体 */
+        .cube-wrapper {
+            width: 300px;
+            height: 380px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateXAxis 25s linear infinite;
+        }
+
+        /* 定义绕X轴旋转6周的关键帧 */
+        @keyframes rotateXAxis {
+            0% {
+                transform: rotateX(0deg);
+            }
+            100% {
+                transform: rotateX(2160deg); 
+            }
+        }
+
+        .photo-panel {
+            position: absolute;
+            width: 280px;
+            height: 340px;
+            left: 10px; 
+            top: 20px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 35px rgba(0,0,0,0.5), 0 0 0 3px rgba(255,215,0,0.7);
+            transition: all 0.4s ease;
+            backface-visibility: visible;
+            background: #faf3e0;
+            border: 2px solid rgba(255,210,90,0.9);
+            cursor: pointer;
+        }
+
+        .photo-panel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        /* 图片悬浮微效果，增强美观 */
+        .photo-panel:hover {
+            box-shadow: 0 0 0 5px #ffd966, 0 30px 40px rgba(0,0,0,0.6);
+            transform: scale(1.02);
+            filter: brightness(1.05);
+        }
+
+        .photo-panel:hover img {
+            transform: scale(1.03);
+        }
+
+        
+        /* 图片1: 0° */
+        .photo-panel:nth-child(1) {
+            transform: rotateX(0deg) translateY(190px) translateZ(20px);
+        }
+        /* 图片2: 60° */
+        .photo-panel:nth-child(2) {
+            transform: rotateX(60deg) translateY(190px) translateZ(20px);
+        }
+        /* 图片3: 120° */
+        .photo-panel:nth-child(3) {
+            transform: rotateX(120deg) translateY(190px) translateZ(20px);
+        }
+        /* 图片4: 180° */
+        .photo-panel:nth-child(4) {
+            transform: rotateX(180deg) translateY(190px) translateZ(20px);
+        }
+        /* 图片5: 240° */
+        .photo-panel:nth-child(5) {
+            transform: rotateX(240deg) translateY(190px) translateZ(20px);
+        }
+        /* 图片6: 300° */
+        .photo-panel:nth-child(6) {
+            transform: rotateX(300deg) translateY(190px) translateZ(20px);
+        }
+
+        .photo-panel::after {
+            content: "♥ 烟台理工 ♥";
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            background: rgba(0,0,0,0.6);
+            color: #ffecb3;
+            font-size: 14px;
+            padding: 6px;
+            font-weight: bold;
+            backdrop-filter: blur(4px);
+            font-family: monospace;
+            letter-spacing: 2px;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+
+        @media (min-aspect-ratio: 1/1) {
+            .stage-3d {
+                min-height: 500px;
+            }
+            .photo-panel {
+                width: 290px;
+                height: 350px;
+            }
+            .cube-wrapper {
+                width: 310px;
+                height: 400px;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .card { width: calc(50% - 12px); }
+            .animation-note { white-space: normal; font-size: 12px; width: 90%; text-align: center;}
+            .photo-panel::after { font-size: 11px; }
+        }
+        @media (max-width: 500px) {
+            .card { width: calc(100% - 12px); }
+            .photo-panel { width: 240px; height: 300px; left: 5px; top: 20px; }
+            .cube-wrapper { width: 260px; height: 350px; }
+            .photo-panel:nth-child(1) { transform: rotateX(0deg) translateY(160px) translateZ(15px);}
+            .photo-panel:nth-child(2) { transform: rotateX(60deg) translateY(160px) translateZ(15px);}
+            .photo-panel:nth-child(3) { transform: rotateX(120deg) translateY(160px) translateZ(15px);}
+            .photo-panel:nth-child(4) { transform: rotateX(180deg) translateY(160px) translateZ(15px);}
+            .photo-panel:nth-child(5) { transform: rotateX(240deg) translateY(160px) translateZ(15px);}
+            .photo-panel:nth-child(6) { transform: rotateX(300deg) translateY(160px) translateZ(15px);}
+        }
+
+        .grid:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="main-title">
+        <h1>美丽烟台理工校园</h1>
+    </div>
+
+    <div class="animation-section">
+        <div class="stage-3d">
+            <div class="cube-wrapper">
+              
+                <div class="photo-panel">
+                    <img src="26.jpg">
+                </div>
+                <div class="photo-panel">
+                    <img src="2.jpg">
+                </div>
+                <div class="photo-panel">
+                    <img src="4.jpg">
+                </div>
+                <div class="photo-panel">
+                    <img src="13.jpg">
+                </div>
+                <div class="photo-panel">
+                    <img src="12.jpg">
+                </div>
+                <div class="photo-panel">
+                    <img src="13.jpg">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========= 主题一========= -->
+    <div>
+        <div class="theme-title">📷校园建筑风貌</div>
+        <div class="grid">
+            <div class="card">
+                <img class="card-img" src="1.jpg" alt="教学楼">
+                <div class="card-title">教学楼 · 书香致远</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="2.jpg" alt="图书馆">
+                <div class="card-title">图书馆 · 智慧之光</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="3.jpg" alt="体育馆">
+                <div class="card-title">体育馆 · 青春跃动</div>
+            </div>
+            <!-- 第2行 第4-6个：图片悬浮倾斜30° -->
+            <div class="card">
+                <img class="card-img" src="4.jpg" alt="樱花园">
+                <div class="card-title">樱花径 · 浪漫理工</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="5.jpg" alt="实验楼">
+                <div class="card-title">创新楼 · 科创未来</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="6.jpg" alt="食堂">
+                <div class="card-title">学校食堂 · 味蕾时光</div>
+            </div>
+            <!-- 第3行 第7-9个 -->
+            <div class="card">
+                <img class="card-img" src="7.jpg" alt="艺术中心">
+                <div class="card-title">子衿剧院 · 美育浸润</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="13.jpg" alt="校友林">
+                <div class="card-title">思源林 · 根叶情深</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="9.jpg" alt="校史馆">
+                <div class="card-title">校史馆 · 岁月峥嵘</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========= 主题二========= -->
+    <div class="theme2">
+        <div class="theme-title">✨校园自然风光</div>
+        <div class="absolute-badge">自然风光</div>
+        <div class="grid">
+            <div class="card">
+                <img class="card-img" src="10.jpg" alt="琴湖">
+                <div class="card-title">琴湖 · 落日熔金</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="11.jpg" alt="向日葵">
+                <div class="card-title">逐日花田 · 向阳生长</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="12.jpg" alt="晨读">
+                <div class="card-title">紫藤架 · 书声琅琅</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="8.jpg" alt="银杏">
+                <div class="card-title">黄金大道 · 秋韵如诗</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="14.jpg" alt="喷泉">
+                <div class="card-title">水韵广场 · 梦幻之夜</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="15.jpg" alt="静思园">
+                <div class="card-title">静思园 · 澄心养性</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="16.jpg" alt="绿道">
+                <div class="card-title">滨海绿道 · 追风少年</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="17.jpg" alt="文创">
+                <div class="card-title">青未了 · 灵感驿站</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="18.jpg" alt="天文台">
+                <div class="card-title">观星台 · 仰望星空</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========= 主题三========= -->
+    <div>
+        <div class="theme-title">🎨校园文化活力</div>
+        <div class="grid">
+            <div class="card">
+                <img class="card-img" src="19.jpg" alt="音乐节">
+                <div class="card-title">草坪音乐节 · 青春律动</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="20.jpg" alt="读书会">
+                <div class="card-title">湖畔读书会 · 思想碰撞</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="21.jpg" alt="足球">
+                <div class="card-title">绿茵赛场 · 热血拼搏</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="2.2.jpg" alt="画展">
+                <div class="card-title">艺术画展 · 美育润心</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="23.jpg" alt="机器人">
+                <div class="card-title">科创竞赛 · 智创未来</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="24.jpg" alt="瑜伽">
+                <div class="card-title">多彩电影节 · 多彩人生</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="25.jpg" alt="志愿">
+                <div class="card-title">志愿服务 · 爱心传递</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="26.jpg" alt="摄影">
+                <div class="card-title">光影摄影 · 定格美好</div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="27.jpg" alt="舞蹈">
+                <div class="card-title">街舞社团 · 燃炸舞台</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    美丽烟台理工学院 | 学号：202405851105 | 姓名：冯子凝
+</div>
+
+</body>
+</html>
